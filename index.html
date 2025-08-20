@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Explaining Moment</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f9fafb; }
+    h1 { color: #1e3a8a; }
+    button { margin: 10px; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    .blue { background: #2563eb; color: white; }
+    .green { background: #16a34a; color: white; }
+    .purple { background: #7c3aed; color: white; }
+    #extra { margin-top: 20px; font-style: italic; color: #374151; }
+  </style>
+</head>
+<body>
+  <h1>📝 Explaining Moment</h1>
+  <p><b>that’s cool</b> → Means something is interesting, nice, or impressive.</p>
+  
+  <div>
+    <button class="blue" onclick="generate('Give me 3 more examples in real-life English conversations')">More Examples</button>
+    <button class="green" onclick="generate('Explain this phrase as if I were 10 years old')">Explain Simply</button>
+    <button class="purple" onclick="generate('Show me how to use this in business English')">Business Context</button>
+  </div>
+
+  <p id="extra"></p>
+
+  <script>
+    const HF_API = "https://api-inference.huggingface.co/models/gpt2";
+    const HF_TOKEN = "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"; // seu token
+    
+    async function generate(promptDetail) {
+      const prompt = `English phrase: "that's cool". ${promptDetail}`;
+      
+      const response = await fetch(HF_API, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${HF_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ inputs: prompt })
+      });
+
+      const data = await response.json();
+      console.log(data); // 👀 debug no console
+      document.getElementById("extra").innerText = data[0]?.generated_text || "Error generating response.";
+    }
+  </script>
+</body>
+</html>
