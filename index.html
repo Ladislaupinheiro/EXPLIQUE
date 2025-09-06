@@ -1,51 +1,963 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-pt" class="">
 <head>
-  <meta charset="UTF-8">
-  <title>Explaining Moment</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f9fafb; }
-    h1 { color: #1e3a8a; }
-    button { margin: 10px; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    .blue { background: #2563eb; color: white; }
-    .green { background: #16a34a; color: white; }
-    .purple { background: #7c3aed; color: white; }
-    #extra { margin-top: 20px; font-style: italic; color: #374151; }
-  </style>
-</head>
-<body>
-  <h1>📝 Explaining Moment</h1>
-  <p><b>that’s cool</b> → Means something is interesting, nice, or impressive.</p>
-  
-  <div>
-    <button class="blue" onclick="generate('Give me 3 more examples in real-life English conversations')">More Examples</button>
-    <button class="green" onclick="generate('Explain this phrase as if I were 10 years old')">Explain Simply</button>
-    <button class="purple" onclick="generate('Show me how to use this in business English')">Business Context</button>
-  </div>
-
-  <p id="extra"></p>
-
-  <script>
-    const HF_API = "https://api-inference.huggingface.co/models/gpt2";
-    const HF_TOKEN = "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"; // seu token
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slangy 2.0 - Domina as Gírias</title>
     
-    async function generate(promptDetail) {
-      const prompt = `English phrase: "that's cool". ${promptDetail}`;
-      
-      const response = await fetch(HF_API, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${HF_TOKEN}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ inputs: prompt })
-      });
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-      const data = await response.json();
-      console.log(data); // 👀 debug no console
-      document.getElementById("extra").innerText = data[0]?.generated_text || "Error generating response.";
-    }
-  </script>
+    <script>
+        // Configuração do Tailwind CSS para um design personalizado
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand': {
+                            'light': '#f59e0b', // amber-500
+                            'DEFAULT': '#d97706', // amber-600
+                            'dark': '#b45309', // amber-700
+                        },
+                        'primary': 'rgb(var(--color-primary) / <alpha-value>)',
+                        'secondary': 'rgb(var(--color-secondary) / <alpha-value>)',
+                        'background': 'rgb(var(--color-background) / <alpha-value>)',
+                        'surface': 'rgb(var(--color-surface) / <alpha-value>)',
+                        'text-primary': 'rgb(var(--color-text-primary) / <alpha-value>)',
+                        'text-secondary': 'rgb(var(--color-text-secondary) / <alpha-value>)',
+                    },
+                    keyframes: {
+                        'fade-in': { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        'fade-in-up': { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        'scale-in': { '0%': { transform: 'scale(0.95)' }, '100%': { transform: 'scale(1)' } },
+                        'slide-in-right': { '0%': { transform: 'translateX(100%)' }, '100%': { transform: 'translateX(0)' } },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.5s ease-out forwards',
+                        'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+                        'scale-in': 'scale-in 0.3s ease-out forwards',
+                        'slide-in-right': 'slide-in-right 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Definição de variáveis de cor para temas claro e escuro */
+        :root {
+            --color-primary: 217 70 239; /* fuchsia-500 */
+            --color-secondary: 139 92 246; /* violet-500 */
+            --color-background: 248 250 252; /* slate-50 */
+            --color-surface: 255 255 255; /* white */
+            --color-text-primary: 30 41 59; /* slate-800 */
+            --color-text-secondary: 71 85 105; /* slate-500 */
+        }
+        .dark {
+            --color-primary: 192 132 252; /* purple-400 */
+            --color-secondary: 124 58 237; /* violet-600 */
+            --color-background: 15 23 42; /* slate-900 */
+            --color-surface: 30 41 59; /* slate-800 */
+            --color-text-primary: 241 245 249; /* slate-100 */
+            --color-text-secondary: 148 163 184; /* slate-400 */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: theme('colors.background');
+            color: theme('colors.text-primary');
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: theme('colors.slate.300'); border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: theme('colors.slate.600'); }
+        
+        /* Estilos para o flip do cartão */
+        .flip-container { perspective: 1000px; }
+        .flipper { transition: transform 0.6s; transform-style: preserve-3d; }
+        .flipper.flipped { transform: rotateY(180deg); }
+        .front, .back { backface-visibility: hidden; }
+        .back { transform: rotateY(180deg); }
+
+        /* Classe para esconder elementos com acessibilidade */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+
+    <!-- Container Principal -->
+    <div class="flex flex-col md:flex-row h-screen">
+
+        <!-- Barra Lateral de Navegação (Sidebar) -->
+        <nav class="bg-surface border-r border-slate-200 dark:border-slate-700 flex flex-row md:flex-col justify-around md:justify-start items-center p-2 md:p-4 md:w-20 lg:w-64 transition-all duration-300">
+            <a href="#" class="flex items-center gap-2 text-primary p-2 rounded-lg lg:w-full">
+                <i class="ph-fill ph-chat-teardrop-text text-3xl"></i>
+                <span class="font-bold text-2xl hidden lg:block">Slangy</span>
+            </a>
+
+            <div class="flex flex-row md:flex-col items-center md:items-start gap-2 md:gap-4 mt-0 md:mt-12 w-full">
+                <button data-section="explainer" class="nav-button active-nav flex items-center gap-3 p-3 rounded-lg w-full text-left">
+                    <i class="ph-fill ph-magnifying-glass text-2xl"></i>
+                    <span class="hidden lg:block font-semibold">Explicador</span>
+                </button>
+                <button data-section="flashcards" class="nav-button flex items-center gap-3 p-3 rounded-lg w-full text-left">
+                     <i class="ph-fill ph-cards text-2xl"></i>
+                    <span class="hidden lg:block font-semibold">Flashcards</span>
+                </button>
+                 <button data-section="game" class="nav-button flex items-center gap-3 p-3 rounded-lg w-full text-left">
+                    <i class="ph-fill ph-game-controller text-2xl"></i>
+                    <span class="hidden lg:block font-semibold">Jogo</span>
+                </button>
+            </div>
+
+            <div class="flex flex-row md:flex-col items-center md:items-start gap-2 md:gap-4 md:mt-auto w-full">
+                 <button data-section="profile" class="nav-button flex items-center gap-3 p-3 rounded-lg w-full text-left">
+                    <i class="ph-fill ph-user-circle text-2xl"></i>
+                    <span id="nav-profile-text" class="hidden lg:block font-semibold">Perfil</span>
+                </button>
+                <button id="themeToggleButton" class="flex items-center gap-3 p-3 rounded-lg w-full text-left text-text-secondary hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i id="theme-icon" class="ph-fill ph-sun text-2xl"></i>
+                    <span class="hidden lg:block font-semibold">Mudar Tema</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar">
+            
+            <!-- SEÇÃO 1: EXPLICADOR DE GÍRIAS -->
+            <section id="explainer-section" class="app-section animate-fade-in">
+                <header class="mb-8">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">Explicador de Gírias</h1>
+                    <p class="text-text-secondary text-lg mt-2">Descubra o significado e o contexto das gírias americanas.</p>
+                </header>
+
+                <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                    <div class="relative flex-grow">
+                        <i class="ph ph-text-aa absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary text-xl"></i>
+                        <input id="slangInput" type="text" placeholder="Ex: 'rizz', 'lowkey', 'cap'" class="w-full bg-surface border border-slate-300 dark:border-slate-600 rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 shadow-sm">
+                    </div>
+                    <button id="searchButton" class="bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                        <i class="ph-fill ph-paper-plane-right"></i>
+                        <span>Explicar</span>
+                    </button>
+                    <button id="randomSlangButton" class="bg-surface hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 font-bold py-3 px-5 rounded-xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-0.5" aria-label="Obter gíria aleatória">
+                        <i class="ph-fill ph-shuffle text-xl"></i>
+                    </button>
+                </div>
+
+                <div id="resultsContainer" class="mt-8 min-h-[300px]">
+                    <!-- Placeholder Inicial -->
+                    <div id="initial-placeholder" class="text-center p-10 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl flex flex-col items-center justify-center animate-fade-in">
+                         <i class="ph-light ph-sparkle text-5xl text-primary mb-4"></i>
+                         <h3 class="text-xl font-semibold text-text-primary">Pronto para aprender?</h3>
+                         <p class="text-text-secondary mt-1">Insira uma gíria ou clique no dado para começar a sua jornada.</p>
+                    </div>
+                    <!-- Indicador de Carregamento -->
+                    <div id="loading-indicator" class="hidden text-center p-10 flex flex-col items-center justify-center">
+                        <i class="ph ph-circle-notch text-5xl text-primary animate-spin"></i>
+                        <p class="text-text-secondary mt-4 font-medium">A consultar os especialistas em gírias...</p>
+                    </div>
+                    <!-- Mensagem de Erro -->
+                    <div id="error-message" class="hidden text-center p-10 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-2xl animate-fade-in">
+                        <i class="ph-fill ph-warning-circle text-5xl text-red-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-red-800 dark:text-red-300">Oops, algo correu mal!</h3>
+                        <p id="error-text" class="text-red-600 dark:text-red-400 mt-1"></p>
+                    </div>
+                    <!-- Cartão de Resultado da Gíria -->
+                    <div id="slang-card" class="hidden bg-surface rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-6 md:p-8 animate-fade-in-up">
+                        <header class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 id="slang-title" class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"></h2>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button id="slang-play-button" class="action-button" aria-label="Ouvir pronúncia">
+                                    <i class="ph-fill ph-speaker-high"></i>
+                                </button>
+                                <button id="add-flashcard-button" class="action-button" aria-label="Adicionar aos flashcards">
+                                    <i class="ph-fill ph-plus-circle"></i>
+                                </button>
+                            </div>
+                        </header>
+                        <div id="slang-content-container"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- SEÇÃO 2: FLASHCARDS -->
+            <section id="flashcards-section" class="app-section hidden">
+                <header class="mb-8 flex justify-between items-center">
+                    <div>
+                         <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">Meus Flashcards</h1>
+                        <p class="text-text-secondary text-lg mt-2">Revise as gírias que guardou para dominar o vocabulário.</p>
+                    </div>
+                    <span id="flashcard-counter" class="bg-primary/10 text-primary font-bold py-1 px-3 rounded-full"></span>
+                </header>
+
+                <div id="flashcards-container">
+                    <!-- Placeholder para quando não há flashcards -->
+                    <div id="empty-flashcards-placeholder" class="hidden text-center p-10 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl flex flex-col items-center justify-center">
+                        <i class="ph-light ph-cardholder text-5xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold text-text-primary">O seu baralho está vazio!</h3>
+                        <p class="text-text-secondary mt-1">Use o botão <i class="ph-fill ph-plus-circle inline-block align-middle"></i> no explicador para adicionar gírias aqui.</p>
+                    </div>
+                    
+                    <!-- Container do Flashcard Ativo -->
+                    <div id="active-flashcard-area" class="hidden">
+                        <div class="flip-container w-full h-80 cursor-pointer" id="flashcard-flipper">
+                            <div class="flipper relative w-full h-full">
+                                <!-- Frente -->
+                                <div class="front absolute w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-primary to-secondary text-white rounded-2xl shadow-2xl">
+                                    <h2 id="flashcard-slang" class="text-5xl font-bold"></h2>
+                                    <p class="mt-4 opacity-80">Toque para revelar a definição</p>
+                                </div>
+                                <!-- Verso -->
+                                <div class="back absolute w-full h-full flex flex-col items-center justify-center p-6 text-center bg-surface rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700">
+                                    <h3 class="text-lg font-bold text-primary mb-2">Definição</h3>
+                                    <p id="flashcard-definition" class="text-text-secondary text-lg"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Controles de Navegação -->
+                        <div class="flex items-center justify-center gap-6 mt-8">
+                            <button id="prev-flashcard-button" class="control-button" aria-label="Flashcard anterior">
+                                <i class="ph-fill ph-arrow-left"></i>
+                            </button>
+                            <button id="delete-flashcard-button" class="text-red-500 hover:bg-red-500/10 p-3 rounded-full transition-colors" aria-label="Apagar flashcard">
+                                <i class="ph-fill ph-trash text-2xl"></i>
+                            </button>
+                            <button id="next-flashcard-button" class="control-button" aria-label="Próximo flashcard">
+                                <i class="ph-fill ph-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- SEÇÃO 3: JOGO -->
+            <section id="game-section" class="app-section hidden">
+                 <header class="mb-8">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">Desafio de Gírias</h1>
+                    <p class="text-text-secondary text-lg mt-2">Use a gíria em contexto para ganhar. Boa sorte!</p>
+                </header>
+                <div id="game-container" class="bg-surface p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <!-- Placeholder quando não há gírias suficientes para jogar -->
+                     <div id="game-not-ready-placeholder" class="hidden text-center p-10 flex flex-col items-center justify-center">
+                        <i class="ph-light ph-rocket-launch text-5xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-semibold text-text-primary">Prepare-se para o desafio!</h3>
+                        <p class="text-text-secondary mt-1">Adicione pelo menos 3 gírias aos seus flashcards para começar a jogar.</p>
+                    </div>
+                    <!-- UI do Jogo Ativo -->
+                    <div id="active-game-area" class="hidden">
+                        <div class="text-center p-4 bg-primary/10 rounded-xl mb-6">
+                            <p class="text-text-secondary">O seu objetivo é usar a gíria:</p>
+                            <h2 id="target-slang" class="text-3xl font-bold text-primary mt-1"></h2>
+                        </div>
+                        <div id="chat-container" class="h-96 overflow-y-auto custom-scrollbar pr-4 space-y-4 mb-4">
+                            <!-- Mensagens do chat aparecem aqui -->
+                        </div>
+                        <div class="flex gap-3">
+                            <input id="chat-input" type="text" placeholder="Escreva a sua resposta..." class="w-full bg-background border border-slate-300 dark:border-slate-600 rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300">
+                            <button id="send-chat-button" class="bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-5 rounded-xl transition-all transform hover:scale-105" aria-label="Enviar mensagem">
+                                <i class="ph-fill ph-paper-plane-right text-xl"></i>
+                            </button>
+                        </div>
+                         <p id="game-error-text" class="text-red-500 text-sm mt-2 text-center hidden"></p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- SEÇÃO 4: PERFIL -->
+            <section id="profile-section" class="app-section hidden">
+                <header class="mb-8">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">O Meu Progresso</h1>
+                    <p class="text-text-secondary text-lg mt-2">Acompanhe a sua jornada para se tornar um mestre das gírias.</p>
+                </header>
+                 <div class="bg-surface p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <div class="text-center mb-8">
+                        <i class="ph-fill ph-user-circle text-8xl text-primary"></i>
+                        <p id="profile-user-id" class="text-sm text-text-secondary mt-2 font-mono break-all" title="O seu ID de utilizador anónimo"></p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
+                        <div class="bg-background p-6 rounded-xl">
+                            <h3 class="text-text-secondary font-semibold">Gírias Aprendidas</h3>
+                            <p id="profile-learned-count" class="text-5xl font-extrabold text-primary mt-2">0</p>
+                        </div>
+                         <div class="bg-background p-6 rounded-xl">
+                            <h3 class="text-text-secondary font-semibold">Flashcards Criados</h3>
+                            <p id="profile-flashcard-count" class="text-5xl font-extrabold text-secondary mt-2">0</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 px-5 rounded-lg shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-500">
+        <i id="toast-icon" class="text-2xl"></i>
+        <span id="toast-message" class="font-semibold"></span>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, deleteDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // --- CONFIGURAÇÃO E INICIALIZAÇÃO ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'slangy-app';
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let unsubscribeFlashcards = null; // Função para parar de ouvir as atualizações do Firestore
+
+        // Variáveis de estado da aplicação
+        let flashcardsDeck = [];
+        let currentFlashcardIndex = 0;
+        let currentSlangData = null; // Armazena os dados da gíria atual
+        let chatHistory = [];
+        let currentGameSlang = null;
+        
+        const slangs = [
+            'lowkey', 'highkey', 'woke', 'flex', 'lit', 'cap', 'ghosting',
+            'rizz', 'bet', 'slay', 'drip', 'vibe check', 'boujee', 'simp',
+            'squad', 'fam', 'fit', 'tea', 'ship', 'stan', 'glow up', 'salty',
+            'extra', 'sus', 'no cap', 'periodt', 'basic', 'clout',
+            'finna', 'yeet', 'oof', 'FOMO', 'JOMO', 'savage', 'based'
+        ];
+
+        // --- ELEMENTOS DO DOM ---
+        const slangInput = document.getElementById('slangInput');
+        const searchButton = document.getElementById('searchButton');
+        const randomSlangButton = document.getElementById('randomSlangButton');
+        
+        const resultsContainer = document.getElementById('resultsContainer');
+        const initialPlaceholder = document.getElementById('initial-placeholder');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        const slangCard = document.getElementById('slang-card');
+        const slangTitle = document.getElementById('slang-title');
+        const slangPlayButton = document.getElementById('slang-play-button');
+        const addFlashcardButton = document.getElementById('add-flashcard-button');
+        const slangContentContainer = document.getElementById('slang-content-container');
+
+        const flashcardsContainer = document.getElementById('flashcards-container');
+        const emptyFlashcardsPlaceholder = document.getElementById('empty-flashcards-placeholder');
+        const activeFlashcardArea = document.getElementById('active-flashcard-area');
+        const flashcardFlipper = document.getElementById('flashcard-flipper');
+        const flashcardSlang = document.getElementById('flashcard-slang');
+        const flashcardDefinition = document.getElementById('flashcard-definition');
+        const prevFlashcardButton = document.getElementById('prev-flashcard-button');
+        const nextFlashcardButton = document.getElementById('next-flashcard-button');
+        const deleteFlashcardButton = document.getElementById('delete-flashcard-button');
+        const flashcardCounter = document.getElementById('flashcard-counter');
+
+        const gameContainer = document.getElementById('game-container');
+        const gameNotReadyPlaceholder = document.getElementById('game-not-ready-placeholder');
+        const activeGameArea = document.getElementById('active-game-area');
+        const targetSlang = document.getElementById('target-slang');
+        const chatContainer = document.getElementById('chat-container');
+        const chatInput = document.getElementById('chat-input');
+        const sendChatButton = document.getElementById('send-chat-button');
+        const gameErrorText = document.getElementById('game-error-text');
+        
+        const profileUserId = document.getElementById('profile-user-id');
+        const profileLearnedCount = document.getElementById('profile-learned-count');
+        const profileFlashcardCount = document.getElementById('profile-flashcard-count');
+
+        // --- LÓGICA DE AUTENTICAÇÃO E DADOS ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                if (unsubscribeFlashcards) unsubscribeFlashcards(); // Cancela a subscrição anterior, se houver
+                
+                const flashcardsColRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'flashcards');
+                unsubscribeFlashcards = onSnapshot(flashcardsColRef, (snapshot) => {
+                    flashcardsDeck = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    flashcardsDeck.sort((a, b) => a.slang.localeCompare(b.slang)); // Ordena alfabeticamente
+                    updateUIOnDataChange();
+                }, (error) => {
+                    console.error("Erro ao obter flashcards:", error);
+                    showToast("Erro ao carregar os seus dados.", "error");
+                });
+            }
+        });
+
+        // Autentica o utilizador anonimamente ou com token
+        (async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Erro na autenticação:", error);
+                showToast("Não foi possível iniciar sessão. Algumas funcionalidades podem não funcionar.", "error");
+            }
+        })();
+
+
+        // --- LÓGICA DA INTERFACE (UI) ---
+
+        // Atualiza toda a UI quando os dados dos flashcards mudam
+        function updateUIOnDataChange() {
+            renderCurrentFlashcard();
+            updateFlashcardView();
+            updateGameView();
+            updateProfileView();
+        }
+
+        // Navegação entre secções
+        document.querySelector('nav').addEventListener('click', (e) => {
+            const button = e.target.closest('.nav-button');
+            if (!button) return;
+
+            const sectionId = button.dataset.section;
+            document.querySelectorAll('.app-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`${sectionId}-section`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active-nav'));
+            button.classList.add('active-nav');
+        });
+
+        // Tema claro/escuro
+        const themeToggleButton = document.getElementById('themeToggleButton');
+        const themeIcon = document.getElementById('theme-icon');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function applyTheme(isDark) {
+            if(isDark) {
+                document.documentElement.classList.add('dark');
+                themeIcon.className = "ph-fill ph-moon text-2xl";
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeIcon.className = "ph-fill ph-sun text-2xl";
+            }
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            applyTheme(isDark);
+        });
+
+        // Aplica o tema guardado ou preferido ao carregar
+        const savedTheme = localStorage.getItem('theme');
+        applyTheme(savedTheme === 'dark' || (savedTheme === null && prefersDark.matches));
+
+
+        // Notificações (Toast)
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toast-icon');
+            document.getElementById('toast-message').textContent = message;
+
+            if (type === 'success') {
+                toastIcon.className = 'ph-fill ph-check-circle text-2xl text-green-400';
+            } else if (type === 'error') {
+                 toastIcon.className = 'ph-fill ph-warning-circle text-2xl text-red-400';
+            } else { // info
+                 toastIcon.className = 'ph-fill ph-info text-2xl text-blue-400';
+            }
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // --- LÓGICA DO EXPLICADOR ---
+        
+        function showLoading() {
+            initialPlaceholder.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            slangCard.classList.add('hidden');
+            loadingIndicator.classList.remove('hidden');
+        }
+
+        function showError(msg) {
+            errorText.textContent = msg;
+            loadingIndicator.classList.add('hidden');
+            slangCard.classList.add('hidden');
+            errorMessage.classList.remove('hidden');
+        }
+        
+        function displaySlang(data) {
+            currentSlangData = data;
+            slangTitle.textContent = data.slang;
+            let contentHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg text-primary mb-2">Definição</h3>
+                        <p class="text-text-secondary leading-relaxed">${data.definition}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-secondary mb-2">Contexto</h3>
+                        <p class="text-text-secondary leading-relaxed">${data.context}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-violet-500 dark:text-violet-400 mb-3">Exemplos</h3>
+                        <ul class="space-y-3">
+                            ${data.examples.map(ex => `
+                                <li class="p-4 bg-background rounded-lg border border-slate-200 dark:border-slate-700">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-text-primary font-semibold">"${ex.phrase}"</p>
+                                        <button class="play-example-button text-text-secondary hover:text-primary transition-colors" data-sentence="${ex.phrase}" aria-label="Ouvir exemplo">
+                                            <i class="ph-fill ph-speaker-high text-xl"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-text-secondary text-sm italic mt-1">${ex.translation}</p>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>`;
+            slangContentContainer.innerHTML = contentHTML;
+
+            loadingIndicator.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            slangCard.classList.remove('hidden');
+        }
+        
+        slangContentContainer.addEventListener('click', e => {
+            const button = e.target.closest('.play-example-button');
+            if (button) {
+                playAudio(button.dataset.sentence, button);
+            }
+        });
+        
+        async function fetchSlangExplanation(slang) {
+            showLoading();
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            const prompt = `Aja como um dicionário de gírias. Explique o termo de gíria "${slang}" em português de Portugal e forneça exemplos. O calão deve ser sempre escrito em inglês. Estruture a resposta como um objeto JSON. Inclua a gíria ("slang"), a definição ("definition"), uma lista de 3 exemplos de frases ("examples"), cada um com a frase original em inglês ("phrase") e a tradução para português ("translation"), e o contexto de uso ("context"). O contexto deve explicar de forma prática como e quando a gíria é usada no dia a dia, em que situações sociais ela se encaixa, e qual é o seu tom (ex: formal, casual, irónico, etc.).`;
+
+             try {
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "slang": { "type": "STRING" },
+                                "definition": { "type": "STRING" },
+                                "examples": { 
+                                    "type": "ARRAY", 
+                                    "items": {
+                                        "type": "OBJECT",
+                                        properties: {
+                                            "phrase": { "type": "STRING" },
+                                            "translation": { "type": "STRING" }
+                                        }
+                                    }
+                                },
+                                "context": { "type": "STRING" }
+                            }
+                        }
+                    }
+                };
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                
+                const result = await response.json();
+                const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!responseText) throw new Error("Resposta da API vazia.");
+
+                const slangData = JSON.parse(responseText);
+                if (!slangData.slang || !slangData.definition) throw new Error("Dados da API incompletos.");
+                
+                displaySlang(slangData);
+
+            } catch (error) {
+                console.error("Erro ao obter explicação:", error);
+                showError("Não foi possível encontrar essa gíria. Tente outra ou verifique a ortografia.");
+            }
+        }
+
+        searchButton.addEventListener('click', () => {
+            const term = slangInput.value.trim();
+            if (term) fetchSlangExplanation(term);
+        });
+
+        slangInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                const term = slangInput.value.trim();
+                if (term) fetchSlangExplanation(term);
+            }
+        });
+
+        randomSlangButton.addEventListener('click', () => {
+             const randomSlang = slangs[Math.floor(Math.random() * slangs.length)];
+             slangInput.value = randomSlang;
+             fetchSlangExplanation(randomSlang);
+        });
+        
+        slangPlayButton.addEventListener('click', (e) => {
+            if (currentSlangData) {
+                playAudio(currentSlangData.slang, e.currentTarget);
+            }
+        });
+
+        addFlashcardButton.addEventListener('click', async () => {
+            if (!currentUser || !currentSlangData) return;
+            
+            const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'flashcards', currentSlangData.slang.toLowerCase());
+            try {
+                await setDoc(docRef, currentSlangData);
+                showToast(`'${currentSlangData.slang}' adicionado aos flashcards!`, 'success');
+            } catch (error) {
+                console.error("Erro ao adicionar flashcard:", error);
+                showToast("Não foi possível adicionar o flashcard.", "error");
+            }
+        });
+
+        // --- LÓGICA DOS FLASHCARDS ---
+
+        function updateFlashcardView() {
+            if (flashcardsDeck.length === 0) {
+                emptyFlashcardsPlaceholder.classList.remove('hidden');
+                activeFlashcardArea.classList.add('hidden');
+                flashcardCounter.textContent = '0/0';
+            } else {
+                emptyFlashcardsPlaceholder.classList.add('hidden');
+                activeFlashcardArea.classList.remove('hidden');
+                flashcardCounter.textContent = `${currentFlashcardIndex + 1}/${flashcardsDeck.length}`;
+            }
+        }
+
+        function renderCurrentFlashcard() {
+             if (flashcardsDeck.length === 0) return;
+            
+             const card = flashcardsDeck[currentFlashcardIndex];
+             flashcardSlang.textContent = card.slang;
+             flashcardDefinition.textContent = card.definition;
+             flashcardFlipper.querySelector('.flipper').classList.remove('flipped');
+        }
+
+        flashcardFlipper.addEventListener('click', () => {
+            flashcardFlipper.querySelector('.flipper').classList.toggle('flipped');
+        });
+
+        prevFlashcardButton.addEventListener('click', () => {
+            if (flashcardsDeck.length === 0) return;
+            currentFlashcardIndex = (currentFlashcardIndex - 1 + flashcardsDeck.length) % flashcardsDeck.length;
+            renderCurrentFlashcard();
+            updateFlashcardView();
+        });
+
+        nextFlashcardButton.addEventListener('click', () => {
+            if (flashcardsDeck.length === 0) return;
+            currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcardsDeck.length;
+            renderCurrentFlashcard();
+            updateFlashcardView();
+        });
+
+        deleteFlashcardButton.addEventListener('click', async () => {
+            if (flashcardsDeck.length === 0 || !currentUser) return;
+            
+            const cardToDelete = flashcardsDeck[currentFlashcardIndex];
+            const confirmDelete = confirm(`Tem a certeza de que quer apagar o flashcard '${cardToDelete.slang}'?`);
+
+            if (confirmDelete) {
+                 try {
+                    const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'flashcards', cardToDelete.id);
+                    await deleteDoc(docRef);
+                    showToast(`'${cardToDelete.slang}' apagado.`, 'info');
+                    // O onSnapshot tratará de atualizar a UI
+                    if (currentFlashcardIndex >= flashcardsDeck.length - 1 && flashcardsDeck.length > 1) {
+                       currentFlashcardIndex = flashcardsDeck.length - 2;
+                    }
+                 } catch (error) {
+                    console.error("Erro ao apagar flashcard:", error);
+                    showToast("Não foi possível apagar o flashcard.", "error");
+                 }
+            }
+        });
+
+        // --- LÓGICA DO JOGO ---
+        function updateGameView() {
+             if (flashcardsDeck.length < 3) {
+                gameNotReadyPlaceholder.classList.remove('hidden');
+                activeGameArea.classList.add('hidden');
+            } else {
+                gameNotReadyPlaceholder.classList.add('hidden');
+                activeGameArea.classList.remove('hidden');
+                if (!currentGameSlang) { // Inicia novo jogo se não houver um ativo
+                    startNewGameRound();
+                }
+            }
+        }
+        
+        function startNewGameRound() {
+            if (flashcardsDeck.length < 3) return;
+
+            chatHistory = [];
+            chatContainer.innerHTML = '';
+            chatInput.value = '';
+            chatInput.disabled = false;
+            gameErrorText.classList.add('hidden');
+
+            const randomCard = flashcardsDeck[Math.floor(Math.random() * flashcardsDeck.length)];
+            currentGameSlang = randomCard.slang;
+            targetSlang.textContent = currentGameSlang;
+
+            const initialPrompt = `Let's start a conversation. You are my friend, and we're just chatting. The goal is for me to naturally use the slang word "${currentGameSlang}". Start the conversation with a simple, open-ended question.`;
+            addMessageToChat('A IA está a pensar...', 'ai', true);
+            generateAiResponse(initialPrompt, true);
+        }
+
+        function addMessageToChat(text, sender, isLoading = false) {
+             const messageDiv = document.createElement('div');
+             messageDiv.className = `flex gap-3 my-4 ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+             
+             const iconClass = sender === 'user' ? 'ph-user-circle' : 'ph-robot';
+             const bubbleClass = sender === 'user' ? 'bg-primary text-white' : 'bg-surface';
+             
+             let contentHTML = `
+                <div class="${sender === 'user' ? 'order-2' : 'order-1'}">
+                    <p class="text-sm text-text-secondary mb-1">${sender === 'user' ? 'Você' : 'Slangy AI'}</p>
+                    <div class="p-3 rounded-lg ${bubbleClass} max-w-xs md:max-w-md">
+                        ${isLoading ? '<i class="ph ph-dots-three animate-pulse"></i>' : text}
+                    </div>
+                </div>
+                <i class="ph-fill ${iconClass} text-3xl text-text-secondary ${sender === 'user' ? 'order-1' : 'order-2'}"></i>`;
+             
+             if(isLoading) {
+                 messageDiv.id = 'loading-bubble';
+             }
+             
+             messageDiv.innerHTML = contentHTML;
+             chatContainer.appendChild(messageDiv);
+             chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        async function handleUserChat() {
+            const userText = chatInput.value.trim();
+            if (!userText || chatInput.disabled) return;
+            
+            addMessageToChat(userText, 'user');
+            chatInput.value = '';
+            chatInput.disabled = true;
+            sendChatButton.disabled = true;
+
+            const normalizedUserText = userText.toLowerCase().replace(/[.,!?;:]/g, '');
+            if (normalizedUserText.includes(currentGameSlang.toLowerCase())) {
+                showToast('Boa! Usou a gíria corretamente!', 'success');
+                setTimeout(() => {
+                    startNewGameRound();
+                    chatInput.disabled = false;
+                    sendChatButton.disabled = false;
+                }, 2000);
+            } else {
+                 addMessageToChat('', 'ai', true);
+                 await generateAiResponse(userText);
+                 chatInput.disabled = false;
+                 sendChatButton.disabled = false;
+            }
+        }
+        
+        async function generateAiResponse(prompt, isInitial = false) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            if (!isInitial) {
+                 chatHistory.push({ role: 'user', parts: [{ text: prompt }] });
+            }
+            const payload = { contents: chatHistory.length > 0 ? chatHistory : [{ parts: [{ text: prompt }] }] };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                
+                const result = await response.json();
+                const aiResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!aiResponseText) throw new Error("AI response was empty.");
+                
+                const loadingBubble = document.getElementById('loading-bubble');
+                if (loadingBubble) loadingBubble.remove();
+
+                addMessageToChat(aiResponseText, 'ai');
+                chatHistory.push({ role: 'model', parts: [{ text: aiResponseText }] });
+
+            } catch (error) {
+                console.error("Error generating AI response:", error);
+                const loadingBubble = document.getElementById('loading-bubble');
+                if (loadingBubble) loadingBubble.remove();
+                addMessageToChat('Desculpe, tive um problema. Vamos tentar novamente.', 'ai');
+                gameErrorText.textContent = "Erro de comunicação com a IA.";
+                gameErrorText.classList.remove('hidden');
+            }
+        }
+
+        sendChatButton.addEventListener('click', handleUserChat);
+        chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleUserChat();
+        });
+
+
+        // --- LÓGICA DO PERFIL ---
+        function updateProfileView() {
+            if (currentUser) {
+                profileUserId.textContent = currentUser.uid;
+            }
+            // A contagem de gírias aprendidas pode ser associada ao número de flashcards
+            profileLearnedCount.textContent = flashcardsDeck.length;
+            profileFlashcardCount.textContent = flashcardsDeck.length;
+        }
+
+        // --- LÓGICA DE ÁUDIO (TTS) ---
+        async function playAudio(text, buttonElement) {
+            if (buttonElement) {
+                const originalIcon = buttonElement.innerHTML;
+                buttonElement.innerHTML = '<i class="ph ph-circle-notch text-xl animate-spin"></i>';
+                buttonElement.disabled = true;
+            
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const payload = {
+                    model: "gemini-2.5-flash-preview-tts",
+                    contents: [{ parts: [{ text: `Say this in a clear, natural American voice: ${text}` }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } } }
+                    },
+                };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    
+                    const audioPart = result?.candidates?.[0]?.content?.parts?.[0];
+                    if (audioPart?.inlineData?.data) {
+                        const audioData = audioPart.inlineData.data;
+                        const mimeType = audioPart.inlineData.mimeType;
+                        const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                        
+                        const binaryString = atob(audioData);
+                        const len = binaryString.length;
+                        const bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        const pcmData = new Int16Array(bytes.buffer);
+                        
+                        const wavBlob = pcmToWav(pcmData, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+                        new Audio(audioUrl).play();
+                    } else {
+                        throw new Error('API do Gemini não retornou dados de áudio válidos.');
+                    }
+                } catch (error) {
+                    console.error('Erro na geração de áudio:', error);
+                    showToast("Não foi possível reproduzir o áudio.", "error");
+                } finally {
+                    setTimeout(() => {
+                      buttonElement.innerHTML = originalIcon;
+                      buttonElement.disabled = false;
+                    }, 500);
+                }
+            }
+        }
+        
+        function pcmToWav(pcmData, sampleRate) {
+            const numChannels = 1, bytesPerSample = 2;
+            const blockAlign = numChannels * bytesPerSample;
+            const byteRate = sampleRate * blockAlign;
+            const buffer = new ArrayBuffer(44 + pcmData.byteLength);
+            const view = new DataView(buffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+            }
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.byteLength, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bytesPerSample * 8, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.byteLength, true);
+
+            for (let i = 0; i < pcmData.length; i++) {
+                view.setInt16(44 + i * 2, pcmData[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+    </script>
+    
+    <style>
+        /* Estilos específicos para a UI, como botões de ação e navegação */
+        .action-button {
+            @apply bg-surface text-text-secondary hover:text-primary transition-colors p-3 rounded-full border border-slate-300 dark:border-slate-600 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700;
+        }
+        .action-button i { @apply text-xl; }
+
+        .control-button {
+             @apply bg-surface text-text-secondary hover:text-primary transition-all p-4 rounded-full border border-slate-300 dark:border-slate-600 shadow-lg hover:shadow-xl transform hover:scale-110;
+        }
+        .control-button i { @apply text-2xl; }
+        
+        .nav-button {
+            @apply text-text-secondary hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-text-primary transition-colors;
+        }
+        .nav-button.active-nav {
+             @apply bg-primary/10 text-primary dark:bg-primary/20;
+        }
+    </style>
 </body>
 </html>
-
