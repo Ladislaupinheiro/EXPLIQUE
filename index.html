@@ -1,963 +1,289 @@
 <!DOCTYPE html>
-<html lang="pt-pt" class="">
+<html lang="pt-br" class="transition-colors duration-500">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slangy 2.0 - Domina as Gírias</title>
-    
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
+    <title>American Slang Explainer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
-    <script>
-        // Configuração do Tailwind CSS para um design personalizado
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'brand': {
-                            'light': '#f59e0b', // amber-500
-                            'DEFAULT': '#d97706', // amber-600
-                            'dark': '#b45309', // amber-700
-                        },
-                        'primary': 'rgb(var(--color-primary) / <alpha-value>)',
-                        'secondary': 'rgb(var(--color-secondary) / <alpha-value>)',
-                        'background': 'rgb(var(--color-background) / <alpha-value>)',
-                        'surface': 'rgb(var(--color-surface) / <alpha-value>)',
-                        'text-primary': 'rgb(var(--color-text-primary) / <alpha-value>)',
-                        'text-secondary': 'rgb(var(--color-text-secondary) / <alpha-value>)',
-                    },
-                    keyframes: {
-                        'fade-in': { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        'fade-in-up': { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        'scale-in': { '0%': { transform: 'scale(0.95)' }, '100%': { transform: 'scale(1)' } },
-                        'slide-in-right': { '0%': { transform: 'translateX(100%)' }, '100%': { transform: 'translateX(0)' } },
-                    },
-                    animation: {
-                        'fade-in': 'fade-in 0.5s ease-out forwards',
-                        'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
-                        'scale-in': 'scale-in 0.3s ease-out forwards',
-                        'slide-in-right': 'slide-in-right 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Definição de variáveis de cor para temas claro e escuro */
-        :root {
-            --color-primary: 217 70 239; /* fuchsia-500 */
-            --color-secondary: 139 92 246; /* violet-500 */
-            --color-background: 248 250 252; /* slate-50 */
-            --color-surface: 255 255 255; /* white */
-            --color-text-primary: 30 41 59; /* slate-800 */
-            --color-text-secondary: 71 85 105; /* slate-500 */
-        }
-        .dark {
-            --color-primary: 192 132 252; /* purple-400 */
-            --color-secondary: 124 58 237; /* violet-600 */
-            --color-background: 15 23 42; /* slate-900 */
-            --color-surface: 30 41 59; /* slate-800 */
-            --color-text-primary: 241 245 249; /* slate-100 */
-            --color-text-secondary: 148 163 184; /* slate-400 */
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: theme('colors.background');
-            color: theme('colors.text-primary');
-            transition: background-color 0.3s, color 0.3s;
-        }
-        /* Custom scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: theme('colors.slate.300'); border-radius: 10px; }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: theme('colors.slate.600'); }
-        
-        /* Estilos para o flip do cartão */
-        .flip-container { perspective: 1000px; }
-        .flipper { transition: transform 0.6s; transform-style: preserve-3d; }
-        .flipper.flipped { transform: rotateY(180deg); }
-        .front, .back { backface-visibility: hidden; }
-        .back { transform: rotateY(180deg); }
-
-        /* Classe para esconder elementos com acessibilidade */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen antialiased">
+<body class="bg-gray-900 text-gray-200 flex items-center justify-center min-h-screen p-4 transition-colors duration-500">
 
-    <!-- Container Principal -->
-    <div class="flex flex-col md:flex-row h-screen">
+    <div id="mainContent" class="relative bg-gray-800 rounded-[2.5rem] shadow-[0_25px_60px_-12px_rgba(0,0,0,0.5)] p-8 md:p-12 max-w-2xl w-full transition-colors duration-500 animate-pop-in border border-gray-700">
+        
+        <button
+            id="themeToggleButton"
+            aria-label="Alternar modo escuro"
+            class="absolute top-6 right-6 z-10 p-3 rounded-full shadow-md transition-all duration-300
+                   bg-gray-700 hover:bg-gray-600 text-white transform hover:scale-110
+                   border border-gray-600"
+        >
+            <svg id="themeIcon" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.5 12.5a7 7 0 11-7.07 7.07.5.5 0 00-.707.707A8 8 0 1012 4.5a8.003 8.003 0 00-4.07 15.34.5.5 0 00.707-.707A7.003 7.003 0 0119.5 12.5z" class="block dark:hidden transition-all duration-300"/>
+                <path d="M12 2.5a.5.5 0 01.5.5v2a.5.5 0 01-1 0V3a.5.5 0 01.5-.5zM15.536 6.464a.5.5 0 01.354.854l-1.414 1.414a.5.5 0 01-.707-.707l1.414-1.414a.5.5 0 01.353-.147zM19 12a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM15.536 17.536a.5.5 0 01-.854.354l-1.414-1.414a.5.5 0 01.707-.707l1.414 1.414a.5.5 0 01.147.353zM12 19a.5.5 0 01-.5.5v2a.5.5 0 011 0v-2a.5.5 0 01-.5-.5zM8.464 17.536a.5.5 0 01-.354.854L6.696 17.0a.5.5 0 01.707-.707l1.414 1.414a.5.5 0 01.353.147zM5 12a.5.5 0 01-.5-.5h-2a.5.5 0 010 1h2a.5.5 0 01.5-.5zM8.464 6.464a.5.5 0 01-.854-.354l1.414-1.414a.5.5 0 01.707.707l-1.414 1.414a.5.5 0 01-.147.353z" class="hidden dark:block transition-all duration-300"/>
+            </svg>
+        </button>
 
-        <!-- Barra Lateral de Navegação (Sidebar) -->
-        <nav class="bg-surface border-r border-slate-200 dark:border-slate-700 flex flex-row md:flex-col justify-around md:justify-start items-center p-2 md:p-4 md:w-20 lg:w-64 transition-all duration-300">
-            <a href="#" class="flex items-center gap-2 text-primary p-2 rounded-lg lg:w-full">
-                <i class="ph-fill ph-chat-teardrop-text text-3xl"></i>
-                <span class="font-bold text-2xl hidden lg:block">Slangy</span>
-            </a>
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-amber-500 dark:from-indigo-400 dark:to-blue-500 mb-2">
+            American Slang
+        </h1>
+        <div class="text-center mb-8 animate-fade-in-up">
+            <p id="subheadingText" class="text-gray-400 text-lg font-medium">
+                Desbloqueie a fluência em gírias americanas.
+            </p>
+            <div class="mt-4 inline-flex items-center space-x-2 p-2 bg-gray-700 rounded-full shadow-inner animate-pulse-subtle">
+                <span class="text-sm font-semibold text-gray-400">
+                    Gírias dominadas:
+                </span>
+                <span id="slangCount" class="text-lg font-extrabold text-yellow-300 transition-colors duration-300">0</span>
+            </div>
+        </div>
+        
+        <div id="learningFeedback" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden relative mb-4 bg-emerald-500 text-white font-semibold py-3 px-6 rounded-2xl shadow-md text-center flex items-center justify-center gap-2 animate-pop-in-bounce min-w-80">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 11-5.93-8.86"></path>
+                <path d="M22 4L12 14.01l-3-3"></path>
+            </svg>
+            <span id="feedbackMessage"></span>
+        </div>
+        
+        <div id="errorMessage" class="hidden text-center text-red-400 font-medium p-4 mt-4 bg-red-900 rounded-2xl shadow-inner animate-fade-in-up">
+            <p id="errorText"></p>
+        </div>
 
-            <div class="flex flex-row md:flex-col items-center md:items-start gap-2 md:gap-4 mt-0 md:mt-12 w-full">
-                <button data-section="explainer" class="nav-button active-nav flex items-center gap-3 p-3 rounded-lg w-full text-left">
-                    <i class="ph-fill ph-magnifying-glass text-2xl"></i>
-                    <span class="hidden lg:block font-semibold">Explicador</span>
-                </button>
-                <button data-section="flashcards" class="nav-button flex items-center gap-3 p-3 rounded-lg w-full text-left">
-                     <i class="ph-fill ph-cards text-2xl"></i>
-                    <span class="hidden lg:block font-semibold">Flashcards</span>
-                </button>
-                 <button data-section="game" class="nav-button flex items-center gap-3 p-3 rounded-lg w-full text-left">
-                    <i class="ph-fill ph-game-controller text-2xl"></i>
-                    <span class="hidden lg:block font-semibold">Jogo</span>
+
+        <div id="explainerSection" class="transition-all duration-500">
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <input
+                    id="slangInput"
+                    type="text"
+                    placeholder="Ex: 'rizz', 'lowkey', 'cap'"
+                    class="flex-grow p-4 border-2 border-gray-600 bg-gray-700 text-white placeholder-gray-400 rounded-2xl focus:outline-none input-glow-focus transition-all duration-300 shadow-sm"
+                >
+                <button
+                    id="searchButton"
+                    class="flex items-center justify-center gap-2 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105
+                        bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Explicar
                 </button>
             </div>
-
-            <div class="flex flex-row md:flex-col items-center md:items-start gap-2 md:gap-4 md:mt-auto w-full">
-                 <button data-section="profile" class="nav-button flex items-center gap-3 p-3 rounded-lg w-full text-left">
-                    <i class="ph-fill ph-user-circle text-2xl"></i>
-                    <span id="nav-profile-text" class="hidden lg:block font-semibold">Perfil</span>
+            
+            <div class="flex flex-col sm:flex-row justify-center items-stretch gap-4">
+                <button
+                    id="randomSlangButton"
+                    class="w-full flex items-center justify-center gap-2 bg-gray-700 text-white font-medium py-3 px-6 rounded-xl shadow-md hover:bg-gray-600 transition-colors duration-200 text-sm transform hover:scale-105"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 22v-4a2 2 0 00-2-2H8a2 2 0 00-2 2v4a2 2 0 002 2h4a2 2 0 002-2z"></path>
+                        <path d="M12 16a4 4 0 004-4V6a4 4 0 00-4-4S8 6 8 12a4 4 0 004 4z"></path>
+                        <path d="M12 2v4a4 4 0 004 4h4a4 4 0 01-4 4"></path>
+                    </svg>
+                    Descobrir Gíria
                 </button>
-                <button id="themeToggleButton" class="flex items-center gap-3 p-3 rounded-lg w-full text-left text-text-secondary hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                    <i id="theme-icon" class="ph-fill ph-sun text-2xl"></i>
-                    <span class="hidden lg:block font-semibold">Mudar Tema</span>
+                <button
+                    id="viewFlashcardsButton"
+                    class="w-full flex items-center justify-center gap-2 bg-gray-700 text-white font-medium py-3 px-6 rounded-xl shadow-md hover:bg-gray-600 transition-colors duration-200 text-sm transform hover:scale-105"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                        <line x1="15" y1="3" x2="15" y2="21"></line>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="3" y1="15" x2="21" y2="15"></line>
+                    </svg>
+                    Meus Flashcards
+                </button>
+                <button
+                    id="startGameButton"
+                    class="w-full flex items-center justify-center gap-2 bg-gray-700 text-white font-medium py-3 px-6 rounded-xl shadow-md hover:bg-gray-600 transition-colors duration-200 text-sm transform hover:scale-105"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 18l6-6-6-6"></path>
+                        <path d="M8 6l-6 6 6 6"></path>
+                    </svg>
+                    Jogar
+                </button>
+                <button
+                    id="viewProfileButton"
+                    class="w-full flex items-center justify-center gap-2 bg-gray-700 text-white font-medium py-3 px-6 rounded-xl shadow-md hover:bg-gray-600 transition-colors duration-200 text-sm transform hover:scale-105"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Perfil
                 </button>
             </div>
-        </nav>
-
-        <!-- Conteúdo Principal -->
-        <main class="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto custom-scrollbar">
             
-            <!-- SEÇÃO 1: EXPLICADOR DE GÍRIAS -->
-            <section id="explainer-section" class="app-section animate-fade-in">
-                <header class="mb-8">
-                    <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">Explicador de Gírias</h1>
-                    <p class="text-text-secondary text-lg mt-2">Descubra o significado e o contexto das gírias americanas.</p>
-                </header>
-
-                <div class="flex flex-col sm:flex-row gap-3 mb-6">
-                    <div class="relative flex-grow">
-                        <i class="ph ph-text-aa absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary text-xl"></i>
-                        <input id="slangInput" type="text" placeholder="Ex: 'rizz', 'lowkey', 'cap'" class="w-full bg-surface border border-slate-300 dark:border-slate-600 rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300 shadow-sm">
+            <div id="resultsContainer" class="mt-6">
+                <div id="loadingIndicator" class="hidden text-center text-gray-500 font-medium">
+                    <div class="flex justify-center items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-yellow-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>A carregar...</span>
                     </div>
-                    <button id="searchButton" class="bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                        <i class="ph-fill ph-paper-plane-right"></i>
-                        <span>Explicar</span>
+                </div>
+
+                <div id="slangCard" class="hidden bg-gray-700 p-6 rounded-[2rem] border border-gray-600 shadow-md transition-opacity duration-300 animate-pop-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-4">
+                            <h3 id="slangTitle" class="text-4xl font-bold text-yellow-300"></h3>
+                            <button id="slangPlayButton" class="play-button bg-indigo-500 hover:bg-indigo-600 text-white font-bold p-3 rounded-full shadow-lg transition-transform transform hover:scale-110" data-sentence="">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+                        </div>
+                        <button id="addFlashcardButton" class="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="tabContainer" class="flex flex-row gap-2 mt-4 mb-4 border-b border-gray-600">
+                        <button id="tab-definicao" class="py-2 px-4 rounded-t-lg font-semibold text-gray-400 hover:text-yellow-300 transition-colors duration-200 border-b-2 border-transparent" data-tab="definicao">Definição</button>
+                        <button id="tab-exemplos" class="py-2 px-4 rounded-t-lg font-semibold text-gray-400 hover:text-yellow-300 transition-colors duration-200 border-b-2 border-transparent" data-tab="exemplos">Exemplos</button>
+                        <button id="tab-contexto" class="py-2 px-4 rounded-t-lg font-semibold text-gray-400 hover:text-yellow-300 transition-colors duration-200 border-b-2 border-transparent" data-tab="contexto">Contexto</button>
+                    </div>
+
+                    <div id="slangContent" class="h-auto max-h-56 custom-scrollbar overflow-y-auto">
+                        </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="flashcardSection" class="hidden transition-all duration-500">
+            <div class="flex flex-col items-center justify-center gap-4">
+                <button id="backToExplainerButton" class="flex items-center justify-center gap-2 mb-4 bg-gray-700 text-white font-medium py-2 px-4 rounded-xl shadow-md hover:bg-gray-600 transition-colors duration-200 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Voltar
+                </button>
+
+                <div class="w-full h-80 relative flex items-center justify-center bg-gray-800 rounded-[2rem] shadow-xl transition-colors duration-500 p-4 animate-pop-in">
+                    <div id="flashcardFlipper" class="w-full h-full flip-container cursor-pointer">
+                        <div class="flipper rounded-[2rem]">
+                            <div class="front flex flex-col items-center justify-center p-6 text-center">
+                                <h2 id="flashcard-slang" class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500"></h2>
+                                <p id="flashcard-subtext" class="text-xl font-medium text-gray-400 mt-2"></p>
+                            </div>
+                            <div class="back flex flex-col items-center p-6 text-center justify-center custom-scrollbar overflow-y-auto">
+                                <h3 class="text-xl font-bold text-gray-200 mb-2">Definição</h3>
+                                <p id="flashcard-definition" class="text-gray-400 mb-4 text-sm"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p id="emptyFlashcardsMessage" class="hidden text-center text-gray-500 font-medium mt-4">
+                    Ainda não tens flashcards. Adiciona algumas gírias para começar a aprender!
+                </p>
+
+                <div id="flashcardControls" class="flex items-center justify-between w-full mt-4">
+                    <button id="prevFlashcardButton" class="p-3 bg-gray-700 rounded-full hover:bg-gray-600 transition-colors duration-200 transform hover:scale-110">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
                     </button>
-                    <button id="randomSlangButton" class="bg-surface hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 font-bold py-3 px-5 rounded-xl shadow-sm hover:shadow-md transition-all transform hover:-translate-y-0.5" aria-label="Obter gíria aleatória">
-                        <i class="ph-fill ph-shuffle text-xl"></i>
+                    <span id="flashcardCounter" class="text-sm font-semibold text-gray-400">0 / 0</span>
+                    <button id="nextFlashcardButton" class="p-3 bg-gray-700 rounded-full hover:bg-gray-600 transition-colors duration-200 transform hover:scale-110">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
                     </button>
                 </div>
+            </div>
+        </div>
 
-                <div id="resultsContainer" class="mt-8 min-h-[300px]">
-                    <!-- Placeholder Inicial -->
-                    <div id="initial-placeholder" class="text-center p-10 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl flex flex-col items-center justify-center animate-fade-in">
-                         <i class="ph-light ph-sparkle text-5xl text-primary mb-4"></i>
-                         <h3 class="text-xl font-semibold text-text-primary">Pronto para aprender?</h3>
-                         <p class="text-text-secondary mt-1">Insira uma gíria ou clique no dado para começar a sua jornada.</p>
+        <div id="gameSection" class="hidden transition-all duration-500 w-full">
+            <div class="flex flex-col h-[70vh] items-center justify-center w-full">
+                <button id="backToExplainerFromGameButton" class="flex items-center justify-center gap-2 mb-4 bg-gray-700 text-white font-medium py-2 px-4 rounded-xl shadow-md hover:bg-gray-600 transition-colors duration-200 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Voltar
+                </button>
+
+                <p id="gameErrorMessage" class="hidden text-center text-red-400 font-medium p-4 mt-4 bg-red-900 rounded-2xl shadow-inner animate-fade-in-up">
+                    <p id="gameErrorText"></p>
+                </p>
+
+                <div class="flex flex-col w-full h-full items-center">
+                    <div id="gameInstructions" class="bg-gray-700 rounded-[2rem] border border-gray-600 shadow-md p-6 text-center animate-pop-in mb-6 w-full">
+                        <p class="text-lg text-gray-400">The goal is to use the slang:</p>
+                        <h3 id="targetSlang" class="text-4xl font-bold text-yellow-300 mt-2 animate-neon-glow"></h3>
                     </div>
-                    <!-- Indicador de Carregamento -->
-                    <div id="loading-indicator" class="hidden text-center p-10 flex flex-col items-center justify-center">
-                        <i class="ph ph-circle-notch text-5xl text-primary animate-spin"></i>
-                        <p class="text-text-secondary mt-4 font-medium">A consultar os especialistas em gírias...</p>
-                    </div>
-                    <!-- Mensagem de Erro -->
-                    <div id="error-message" class="hidden text-center p-10 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-2xl animate-fade-in">
-                        <i class="ph-fill ph-warning-circle text-5xl text-red-500 mb-4"></i>
-                        <h3 class="text-xl font-semibold text-red-800 dark:text-red-300">Oops, algo correu mal!</h3>
-                        <p id="error-text" class="text-red-600 dark:text-red-400 mt-1"></p>
-                    </div>
-                    <!-- Cartão de Resultado da Gíria -->
-                    <div id="slang-card" class="hidden bg-surface rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-6 md:p-8 animate-fade-in-up">
-                        <header class="flex items-center justify-between mb-6">
-                            <div>
-                                <h2 id="slang-title" class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"></h2>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button id="slang-play-button" class="action-button" aria-label="Ouvir pronúncia">
-                                    <i class="ph-fill ph-speaker-high"></i>
-                                </button>
-                                <button id="add-flashcard-button" class="action-button" aria-label="Adicionar aos flashcards">
-                                    <i class="ph-fill ph-plus-circle"></i>
-                                </button>
-                            </div>
-                        </header>
-                        <div id="slang-content-container"></div>
+
+                    <div id="chatContainer" class="w-full flex-grow chat-container custom-scrollbar">
+                        </div>
+
+                    <div class="flex w-full mt-4 gap-2">
+                        <input
+                            id="chatInput"
+                            type="text"
+                            placeholder="Type your response here..."
+                            class="flex-grow p-4 border-2 border-gray-600 bg-gray-700 text-white placeholder-gray-400 rounded-2xl focus:outline-none input-glow-focus transition-all duration-300 shadow-sm"
+                        >
+                        <button
+                            id="sendChatButton"
+                            class="flex-shrink-0 flex items-center justify-center gap-2 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105
+                               bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
                     </div>
                 </div>
-            </section>
-            
-            <!-- SEÇÃO 2: FLASHCARDS -->
-            <section id="flashcards-section" class="app-section hidden">
-                <header class="mb-8 flex justify-between items-center">
-                    <div>
-                         <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">Meus Flashcards</h1>
-                        <p class="text-text-secondary text-lg mt-2">Revise as gírias que guardou para dominar o vocabulário.</p>
-                    </div>
-                    <span id="flashcard-counter" class="bg-primary/10 text-primary font-bold py-1 px-3 rounded-full"></span>
-                </header>
+            </div>
+        </div>
+        
+        <div id="profileSection" class="hidden transition-all duration-500">
+            <div class="flex flex-col items-center justify-center gap-6">
+                <button id="backToExplainerFromProfileButton" class="flex items-center justify-center gap-2 mb-4 bg-gray-700 text-white font-medium py-2 px-4 rounded-xl shadow-md hover:bg-gray-600 transition-colors duration-200 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Voltar
+                </button>
 
-                <div id="flashcards-container">
-                    <!-- Placeholder para quando não há flashcards -->
-                    <div id="empty-flashcards-placeholder" class="hidden text-center p-10 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl flex flex-col items-center justify-center">
-                        <i class="ph-light ph-cardholder text-5xl text-primary mb-4"></i>
-                        <h3 class="text-xl font-semibold text-text-primary">O seu baralho está vazio!</h3>
-                        <p class="text-text-secondary mt-1">Use o botão <i class="ph-fill ph-plus-circle inline-block align-middle"></i> no explicador para adicionar gírias aqui.</p>
-                    </div>
-                    
-                    <!-- Container do Flashcard Ativo -->
-                    <div id="active-flashcard-area" class="hidden">
-                        <div class="flip-container w-full h-80 cursor-pointer" id="flashcard-flipper">
-                            <div class="flipper relative w-full h-full">
-                                <!-- Frente -->
-                                <div class="front absolute w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-primary to-secondary text-white rounded-2xl shadow-2xl">
-                                    <h2 id="flashcard-slang" class="text-5xl font-bold"></h2>
-                                    <p class="mt-4 opacity-80">Toque para revelar a definição</p>
-                                </div>
-                                <!-- Verso -->
-                                <div class="back absolute w-full h-full flex flex-col items-center justify-center p-6 text-center bg-surface rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700">
-                                    <h3 class="text-lg font-bold text-primary mb-2">Definição</h3>
-                                    <p id="flashcard-definition" class="text-text-secondary text-lg"></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Controles de Navegação -->
-                        <div class="flex items-center justify-center gap-6 mt-8">
-                            <button id="prev-flashcard-button" class="control-button" aria-label="Flashcard anterior">
-                                <i class="ph-fill ph-arrow-left"></i>
-                            </button>
-                            <button id="delete-flashcard-button" class="text-red-500 hover:bg-red-500/10 p-3 rounded-full transition-colors" aria-label="Apagar flashcard">
-                                <i class="ph-fill ph-trash text-2xl"></i>
-                            </button>
-                            <button id="next-flashcard-button" class="control-button" aria-label="Próximo flashcard">
-                                <i class="ph-fill ph-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
+                <div class="w-full bg-gray-700 rounded-[2rem] border border-gray-600 shadow-md p-6 text-center animate-pop-in mb-6">
+                    <h2 class="text-3xl font-bold text-yellow-300">Meu Perfil</h2>
+                    <p id="profileUserId" class="text-sm font-medium text-gray-400 mt-2 break-all"></p>
                 </div>
-            </section>
-            
-            <!-- SEÇÃO 3: JOGO -->
-            <section id="game-section" class="app-section hidden">
-                 <header class="mb-8">
-                    <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">Desafio de Gírias</h1>
-                    <p class="text-text-secondary text-lg mt-2">Use a gíria em contexto para ganhar. Boa sorte!</p>
-                </header>
-                <div id="game-container" class="bg-surface p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
-                    <!-- Placeholder quando não há gírias suficientes para jogar -->
-                     <div id="game-not-ready-placeholder" class="hidden text-center p-10 flex flex-col items-center justify-center">
-                        <i class="ph-light ph-rocket-launch text-5xl text-primary mb-4"></i>
-                        <h3 class="text-xl font-semibold text-text-primary">Prepare-se para o desafio!</h3>
-                        <p class="text-text-secondary mt-1">Adicione pelo menos 3 gírias aos seus flashcards para começar a jogar.</p>
-                    </div>
-                    <!-- UI do Jogo Ativo -->
-                    <div id="active-game-area" class="hidden">
-                        <div class="text-center p-4 bg-primary/10 rounded-xl mb-6">
-                            <p class="text-text-secondary">O seu objetivo é usar a gíria:</p>
-                            <h2 id="target-slang" class="text-3xl font-bold text-primary mt-1"></h2>
-                        </div>
-                        <div id="chat-container" class="h-96 overflow-y-auto custom-scrollbar pr-4 space-y-4 mb-4">
-                            <!-- Mensagens do chat aparecem aqui -->
-                        </div>
-                        <div class="flex gap-3">
-                            <input id="chat-input" type="text" placeholder="Escreva a sua resposta..." class="w-full bg-background border border-slate-300 dark:border-slate-600 rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300">
-                            <button id="send-chat-button" class="bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-5 rounded-xl transition-all transform hover:scale-105" aria-label="Enviar mensagem">
-                                <i class="ph-fill ph-paper-plane-right text-xl"></i>
-                            </button>
-                        </div>
-                         <p id="game-error-text" class="text-red-500 text-sm mt-2 text-center hidden"></p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- SEÇÃO 4: PERFIL -->
-            <section id="profile-section" class="app-section hidden">
-                <header class="mb-8">
-                    <h1 class="text-4xl md:text-5xl font-extrabold text-text-primary">O Meu Progresso</h1>
-                    <p class="text-text-secondary text-lg mt-2">Acompanhe a sua jornada para se tornar um mestre das gírias.</p>
-                </header>
-                 <div class="bg-surface p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
-                    <div class="text-center mb-8">
-                        <i class="ph-fill ph-user-circle text-8xl text-primary"></i>
-                        <p id="profile-user-id" class="text-sm text-text-secondary mt-2 font-mono break-all" title="O seu ID de utilizador anónimo"></p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
-                        <div class="bg-background p-6 rounded-xl">
-                            <h3 class="text-text-secondary font-semibold">Gírias Aprendidas</h3>
-                            <p id="profile-learned-count" class="text-5xl font-extrabold text-primary mt-2">0</p>
-                        </div>
-                         <div class="bg-background p-6 rounded-xl">
-                            <h3 class="text-text-secondary font-semibold">Flashcards Criados</h3>
-                            <p id="profile-flashcard-count" class="text-5xl font-extrabold text-secondary mt-2">0</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Toast de Notificação -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 px-5 rounded-lg shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-500">
-        <i id="toast-icon" class="text-2xl"></i>
-        <span id="toast-message" class="font-semibold"></span>
-    </div>
-
-    <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, deleteDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // --- CONFIGURAÇÃO E INICIALIZAÇÃO ---
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'slangy-app';
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-        let unsubscribeFlashcards = null; // Função para parar de ouvir as atualizações do Firestore
-
-        // Variáveis de estado da aplicação
-        let flashcardsDeck = [];
-        let currentFlashcardIndex = 0;
-        let currentSlangData = null; // Armazena os dados da gíria atual
-        let chatHistory = [];
-        let currentGameSlang = null;
-        
-        const slangs = [
-            'lowkey', 'highkey', 'woke', 'flex', 'lit', 'cap', 'ghosting',
-            'rizz', 'bet', 'slay', 'drip', 'vibe check', 'boujee', 'simp',
-            'squad', 'fam', 'fit', 'tea', 'ship', 'stan', 'glow up', 'salty',
-            'extra', 'sus', 'no cap', 'periodt', 'basic', 'clout',
-            'finna', 'yeet', 'oof', 'FOMO', 'JOMO', 'savage', 'based'
-        ];
-
-        // --- ELEMENTOS DO DOM ---
-        const slangInput = document.getElementById('slangInput');
-        const searchButton = document.getElementById('searchButton');
-        const randomSlangButton = document.getElementById('randomSlangButton');
-        
-        const resultsContainer = document.getElementById('resultsContainer');
-        const initialPlaceholder = document.getElementById('initial-placeholder');
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const errorMessage = document.getElementById('error-message');
-        const errorText = document.getElementById('error-text');
-        const slangCard = document.getElementById('slang-card');
-        const slangTitle = document.getElementById('slang-title');
-        const slangPlayButton = document.getElementById('slang-play-button');
-        const addFlashcardButton = document.getElementById('add-flashcard-button');
-        const slangContentContainer = document.getElementById('slang-content-container');
-
-        const flashcardsContainer = document.getElementById('flashcards-container');
-        const emptyFlashcardsPlaceholder = document.getElementById('empty-flashcards-placeholder');
-        const activeFlashcardArea = document.getElementById('active-flashcard-area');
-        const flashcardFlipper = document.getElementById('flashcard-flipper');
-        const flashcardSlang = document.getElementById('flashcard-slang');
-        const flashcardDefinition = document.getElementById('flashcard-definition');
-        const prevFlashcardButton = document.getElementById('prev-flashcard-button');
-        const nextFlashcardButton = document.getElementById('next-flashcard-button');
-        const deleteFlashcardButton = document.getElementById('delete-flashcard-button');
-        const flashcardCounter = document.getElementById('flashcard-counter');
-
-        const gameContainer = document.getElementById('game-container');
-        const gameNotReadyPlaceholder = document.getElementById('game-not-ready-placeholder');
-        const activeGameArea = document.getElementById('active-game-area');
-        const targetSlang = document.getElementById('target-slang');
-        const chatContainer = document.getElementById('chat-container');
-        const chatInput = document.getElementById('chat-input');
-        const sendChatButton = document.getElementById('send-chat-button');
-        const gameErrorText = document.getElementById('game-error-text');
-        
-        const profileUserId = document.getElementById('profile-user-id');
-        const profileLearnedCount = document.getElementById('profile-learned-count');
-        const profileFlashcardCount = document.getElementById('profile-flashcard-count');
-
-        // --- LÓGICA DE AUTENTICAÇÃO E DADOS ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                if (unsubscribeFlashcards) unsubscribeFlashcards(); // Cancela a subscrição anterior, se houver
                 
-                const flashcardsColRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'flashcards');
-                unsubscribeFlashcards = onSnapshot(flashcardsColRef, (snapshot) => {
-                    flashcardsDeck = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    flashcardsDeck.sort((a, b) => a.slang.localeCompare(b.slang)); // Ordena alfabeticamente
-                    updateUIOnDataChange();
-                }, (error) => {
-                    console.error("Erro ao obter flashcards:", error);
-                    showToast("Erro ao carregar os seus dados.", "error");
-                });
-            }
-        });
-
-        // Autentica o utilizador anonimamente ou com token
-        (async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Erro na autenticação:", error);
-                showToast("Não foi possível iniciar sessão. Algumas funcionalidades podem não funcionar.", "error");
-            }
-        })();
-
-
-        // --- LÓGICA DA INTERFACE (UI) ---
-
-        // Atualiza toda a UI quando os dados dos flashcards mudam
-        function updateUIOnDataChange() {
-            renderCurrentFlashcard();
-            updateFlashcardView();
-            updateGameView();
-            updateProfileView();
-        }
-
-        // Navegação entre secções
-        document.querySelector('nav').addEventListener('click', (e) => {
-            const button = e.target.closest('.nav-button');
-            if (!button) return;
-
-            const sectionId = button.dataset.section;
-            document.querySelectorAll('.app-section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`${sectionId}-section`).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active-nav'));
-            button.classList.add('active-nav');
-        });
-
-        // Tema claro/escuro
-        const themeToggleButton = document.getElementById('themeToggleButton');
-        const themeIcon = document.getElementById('theme-icon');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-        function applyTheme(isDark) {
-            if(isDark) {
-                document.documentElement.classList.add('dark');
-                themeIcon.className = "ph-fill ph-moon text-2xl";
-            } else {
-                document.documentElement.classList.remove('dark');
-                themeIcon.className = "ph-fill ph-sun text-2xl";
-            }
-        }
-
-        themeToggleButton.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            applyTheme(isDark);
-        });
-
-        // Aplica o tema guardado ou preferido ao carregar
-        const savedTheme = localStorage.getItem('theme');
-        applyTheme(savedTheme === 'dark' || (savedTheme === null && prefersDark.matches));
-
-
-        // Notificações (Toast)
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastIcon = document.getElementById('toast-icon');
-            document.getElementById('toast-message').textContent = message;
-
-            if (type === 'success') {
-                toastIcon.className = 'ph-fill ph-check-circle text-2xl text-green-400';
-            } else if (type === 'error') {
-                 toastIcon.className = 'ph-fill ph-warning-circle text-2xl text-red-400';
-            } else { // info
-                 toastIcon.className = 'ph-fill ph-info text-2xl text-blue-400';
-            }
-            
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        // --- LÓGICA DO EXPLICADOR ---
-        
-        function showLoading() {
-            initialPlaceholder.classList.add('hidden');
-            errorMessage.classList.add('hidden');
-            slangCard.classList.add('hidden');
-            loadingIndicator.classList.remove('hidden');
-        }
-
-        function showError(msg) {
-            errorText.textContent = msg;
-            loadingIndicator.classList.add('hidden');
-            slangCard.classList.add('hidden');
-            errorMessage.classList.remove('hidden');
-        }
-        
-        function displaySlang(data) {
-            currentSlangData = data;
-            slangTitle.textContent = data.slang;
-            let contentHTML = `
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="font-bold text-lg text-primary mb-2">Definição</h3>
-                        <p class="text-text-secondary leading-relaxed">${data.definition}</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                    <div class="bg-gray-700 rounded-2xl p-6 text-center shadow-lg transition-transform transform hover:scale-105">
+                        <h3 class="text-xl font-bold text-indigo-400">Gírias Aprendidas</h3>
+                        <p id="profileLearnedCount" class="text-5xl font-extrabold mt-2 text-yellow-300"></p>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg text-secondary mb-2">Contexto</h3>
-                        <p class="text-text-secondary leading-relaxed">${data.context}</p>
+                    <div class="bg-gray-700 rounded-2xl p-6 text-center shadow-lg transition-transform transform hover:scale-105">
+                        <h3 class="text-xl font-bold text-indigo-400">Flashcards Criados</h3>
+                        <p id="profileFlashcardCount" class="text-5xl font-extrabold mt-2 text-yellow-300"></p>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg text-violet-500 dark:text-violet-400 mb-3">Exemplos</h3>
-                        <ul class="space-y-3">
-                            ${data.examples.map(ex => `
-                                <li class="p-4 bg-background rounded-lg border border-slate-200 dark:border-slate-700">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-text-primary font-semibold">"${ex.phrase}"</p>
-                                        <button class="play-example-button text-text-secondary hover:text-primary transition-colors" data-sentence="${ex.phrase}" aria-label="Ouvir exemplo">
-                                            <i class="ph-fill ph-speaker-high text-xl"></i>
-                                        </button>
-                                    </div>
-                                    <p class="text-text-secondary text-sm italic mt-1">${ex.translation}</p>
-                                </li>
-                            `).join('')}
+                </div>
+
+                <div class="w-full mt-6 bg-gray-700 rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold text-indigo-400 mb-4 text-center">Minhas Gírias</h3>
+                    <ul id="profileSlangList" class="space-y-2 custom-scrollbar max-h-56 overflow-y-auto">
                         </ul>
-                    </div>
-                </div>`;
-            slangContentContainer.innerHTML = contentHTML;
-
-            loadingIndicator.classList.add('hidden');
-            errorMessage.classList.add('hidden');
-            slangCard.classList.remove('hidden');
-        }
-        
-        slangContentContainer.addEventListener('click', e => {
-            const button = e.target.closest('.play-example-button');
-            if (button) {
-                playAudio(button.dataset.sentence, button);
-            }
-        });
-        
-        async function fetchSlangExplanation(slang) {
-            showLoading();
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-            
-            const prompt = `Aja como um dicionário de gírias. Explique o termo de gíria "${slang}" em português de Portugal e forneça exemplos. O calão deve ser sempre escrito em inglês. Estruture a resposta como um objeto JSON. Inclua a gíria ("slang"), a definição ("definition"), uma lista de 3 exemplos de frases ("examples"), cada um com a frase original em inglês ("phrase") e a tradução para português ("translation"), e o contexto de uso ("context"). O contexto deve explicar de forma prática como e quando a gíria é usada no dia a dia, em que situações sociais ela se encaixa, e qual é o seu tom (ex: formal, casual, irónico, etc.).`;
-
-             try {
-                const payload = {
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "OBJECT",
-                            properties: {
-                                "slang": { "type": "STRING" },
-                                "definition": { "type": "STRING" },
-                                "examples": { 
-                                    "type": "ARRAY", 
-                                    "items": {
-                                        "type": "OBJECT",
-                                        properties: {
-                                            "phrase": { "type": "STRING" },
-                                            "translation": { "type": "STRING" }
-                                        }
-                                    }
-                                },
-                                "context": { "type": "STRING" }
-                            }
-                        }
-                    }
-                };
-                
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                
-                const result = await response.json();
-                const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!responseText) throw new Error("Resposta da API vazia.");
-
-                const slangData = JSON.parse(responseText);
-                if (!slangData.slang || !slangData.definition) throw new Error("Dados da API incompletos.");
-                
-                displaySlang(slangData);
-
-            } catch (error) {
-                console.error("Erro ao obter explicação:", error);
-                showError("Não foi possível encontrar essa gíria. Tente outra ou verifique a ortografia.");
-            }
-        }
-
-        searchButton.addEventListener('click', () => {
-            const term = slangInput.value.trim();
-            if (term) fetchSlangExplanation(term);
-        });
-
-        slangInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') {
-                const term = slangInput.value.trim();
-                if (term) fetchSlangExplanation(term);
-            }
-        });
-
-        randomSlangButton.addEventListener('click', () => {
-             const randomSlang = slangs[Math.floor(Math.random() * slangs.length)];
-             slangInput.value = randomSlang;
-             fetchSlangExplanation(randomSlang);
-        });
-        
-        slangPlayButton.addEventListener('click', (e) => {
-            if (currentSlangData) {
-                playAudio(currentSlangData.slang, e.currentTarget);
-            }
-        });
-
-        addFlashcardButton.addEventListener('click', async () => {
-            if (!currentUser || !currentSlangData) return;
-            
-            const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'flashcards', currentSlangData.slang.toLowerCase());
-            try {
-                await setDoc(docRef, currentSlangData);
-                showToast(`'${currentSlangData.slang}' adicionado aos flashcards!`, 'success');
-            } catch (error) {
-                console.error("Erro ao adicionar flashcard:", error);
-                showToast("Não foi possível adicionar o flashcard.", "error");
-            }
-        });
-
-        // --- LÓGICA DOS FLASHCARDS ---
-
-        function updateFlashcardView() {
-            if (flashcardsDeck.length === 0) {
-                emptyFlashcardsPlaceholder.classList.remove('hidden');
-                activeFlashcardArea.classList.add('hidden');
-                flashcardCounter.textContent = '0/0';
-            } else {
-                emptyFlashcardsPlaceholder.classList.add('hidden');
-                activeFlashcardArea.classList.remove('hidden');
-                flashcardCounter.textContent = `${currentFlashcardIndex + 1}/${flashcardsDeck.length}`;
-            }
-        }
-
-        function renderCurrentFlashcard() {
-             if (flashcardsDeck.length === 0) return;
-            
-             const card = flashcardsDeck[currentFlashcardIndex];
-             flashcardSlang.textContent = card.slang;
-             flashcardDefinition.textContent = card.definition;
-             flashcardFlipper.querySelector('.flipper').classList.remove('flipped');
-        }
-
-        flashcardFlipper.addEventListener('click', () => {
-            flashcardFlipper.querySelector('.flipper').classList.toggle('flipped');
-        });
-
-        prevFlashcardButton.addEventListener('click', () => {
-            if (flashcardsDeck.length === 0) return;
-            currentFlashcardIndex = (currentFlashcardIndex - 1 + flashcardsDeck.length) % flashcardsDeck.length;
-            renderCurrentFlashcard();
-            updateFlashcardView();
-        });
-
-        nextFlashcardButton.addEventListener('click', () => {
-            if (flashcardsDeck.length === 0) return;
-            currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcardsDeck.length;
-            renderCurrentFlashcard();
-            updateFlashcardView();
-        });
-
-        deleteFlashcardButton.addEventListener('click', async () => {
-            if (flashcardsDeck.length === 0 || !currentUser) return;
-            
-            const cardToDelete = flashcardsDeck[currentFlashcardIndex];
-            const confirmDelete = confirm(`Tem a certeza de que quer apagar o flashcard '${cardToDelete.slang}'?`);
-
-            if (confirmDelete) {
-                 try {
-                    const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'flashcards', cardToDelete.id);
-                    await deleteDoc(docRef);
-                    showToast(`'${cardToDelete.slang}' apagado.`, 'info');
-                    // O onSnapshot tratará de atualizar a UI
-                    if (currentFlashcardIndex >= flashcardsDeck.length - 1 && flashcardsDeck.length > 1) {
-                       currentFlashcardIndex = flashcardsDeck.length - 2;
-                    }
-                 } catch (error) {
-                    console.error("Erro ao apagar flashcard:", error);
-                    showToast("Não foi possível apagar o flashcard.", "error");
-                 }
-            }
-        });
-
-        // --- LÓGICA DO JOGO ---
-        function updateGameView() {
-             if (flashcardsDeck.length < 3) {
-                gameNotReadyPlaceholder.classList.remove('hidden');
-                activeGameArea.classList.add('hidden');
-            } else {
-                gameNotReadyPlaceholder.classList.add('hidden');
-                activeGameArea.classList.remove('hidden');
-                if (!currentGameSlang) { // Inicia novo jogo se não houver um ativo
-                    startNewGameRound();
-                }
-            }
-        }
-        
-        function startNewGameRound() {
-            if (flashcardsDeck.length < 3) return;
-
-            chatHistory = [];
-            chatContainer.innerHTML = '';
-            chatInput.value = '';
-            chatInput.disabled = false;
-            gameErrorText.classList.add('hidden');
-
-            const randomCard = flashcardsDeck[Math.floor(Math.random() * flashcardsDeck.length)];
-            currentGameSlang = randomCard.slang;
-            targetSlang.textContent = currentGameSlang;
-
-            const initialPrompt = `Let's start a conversation. You are my friend, and we're just chatting. The goal is for me to naturally use the slang word "${currentGameSlang}". Start the conversation with a simple, open-ended question.`;
-            addMessageToChat('A IA está a pensar...', 'ai', true);
-            generateAiResponse(initialPrompt, true);
-        }
-
-        function addMessageToChat(text, sender, isLoading = false) {
-             const messageDiv = document.createElement('div');
-             messageDiv.className = `flex gap-3 my-4 ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
-             
-             const iconClass = sender === 'user' ? 'ph-user-circle' : 'ph-robot';
-             const bubbleClass = sender === 'user' ? 'bg-primary text-white' : 'bg-surface';
-             
-             let contentHTML = `
-                <div class="${sender === 'user' ? 'order-2' : 'order-1'}">
-                    <p class="text-sm text-text-secondary mb-1">${sender === 'user' ? 'Você' : 'Slangy AI'}</p>
-                    <div class="p-3 rounded-lg ${bubbleClass} max-w-xs md:max-w-md">
-                        ${isLoading ? '<i class="ph ph-dots-three animate-pulse"></i>' : text}
-                    </div>
+                    <p id="profileEmptyMessage" class="hidden text-gray-500 text-center mt-2">Nenhuma gíria guardada ainda.</p>
                 </div>
-                <i class="ph-fill ${iconClass} text-3xl text-text-secondary ${sender === 'user' ? 'order-1' : 'order-2'}"></i>`;
-             
-             if(isLoading) {
-                 messageDiv.id = 'loading-bubble';
-             }
-             
-             messageDiv.innerHTML = contentHTML;
-             chatContainer.appendChild(messageDiv);
-             chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        async function handleUserChat() {
-            const userText = chatInput.value.trim();
-            if (!userText || chatInput.disabled) return;
-            
-            addMessageToChat(userText, 'user');
-            chatInput.value = '';
-            chatInput.disabled = true;
-            sendChatButton.disabled = true;
+            </div>
+        </div>
+    </div>
 
-            const normalizedUserText = userText.toLowerCase().replace(/[.,!?;:]/g, '');
-            if (normalizedUserText.includes(currentGameSlang.toLowerCase())) {
-                showToast('Boa! Usou a gíria corretamente!', 'success');
-                setTimeout(() => {
-                    startNewGameRound();
-                    chatInput.disabled = false;
-                    sendChatButton.disabled = false;
-                }, 2000);
-            } else {
-                 addMessageToChat('', 'ai', true);
-                 await generateAiResponse(userText);
-                 chatInput.disabled = false;
-                 sendChatButton.disabled = false;
-            }
-        }
-        
-        async function generateAiResponse(prompt, isInitial = false) {
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            if (!isInitial) {
-                 chatHistory.push({ role: 'user', parts: [{ text: prompt }] });
-            }
-            const payload = { contents: chatHistory.length > 0 ? chatHistory : [{ parts: [{ text: prompt }] }] };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                
-                const result = await response.json();
-                const aiResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!aiResponseText) throw new Error("AI response was empty.");
-                
-                const loadingBubble = document.getElementById('loading-bubble');
-                if (loadingBubble) loadingBubble.remove();
-
-                addMessageToChat(aiResponseText, 'ai');
-                chatHistory.push({ role: 'model', parts: [{ text: aiResponseText }] });
-
-            } catch (error) {
-                console.error("Error generating AI response:", error);
-                const loadingBubble = document.getElementById('loading-bubble');
-                if (loadingBubble) loadingBubble.remove();
-                addMessageToChat('Desculpe, tive um problema. Vamos tentar novamente.', 'ai');
-                gameErrorText.textContent = "Erro de comunicação com a IA.";
-                gameErrorText.classList.remove('hidden');
-            }
-        }
-
-        sendChatButton.addEventListener('click', handleUserChat);
-        chatInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') handleUserChat();
-        });
-
-
-        // --- LÓGICA DO PERFIL ---
-        function updateProfileView() {
-            if (currentUser) {
-                profileUserId.textContent = currentUser.uid;
-            }
-            // A contagem de gírias aprendidas pode ser associada ao número de flashcards
-            profileLearnedCount.textContent = flashcardsDeck.length;
-            profileFlashcardCount.textContent = flashcardsDeck.length;
-        }
-
-        // --- LÓGICA DE ÁUDIO (TTS) ---
-        async function playAudio(text, buttonElement) {
-            if (buttonElement) {
-                const originalIcon = buttonElement.innerHTML;
-                buttonElement.innerHTML = '<i class="ph ph-circle-notch text-xl animate-spin"></i>';
-                buttonElement.disabled = true;
-            
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-                const payload = {
-                    model: "gemini-2.5-flash-preview-tts",
-                    contents: [{ parts: [{ text: `Say this in a clear, natural American voice: ${text}` }] }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } } }
-                    },
-                };
-
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const result = await response.json();
-                    
-                    const audioPart = result?.candidates?.[0]?.content?.parts?.[0];
-                    if (audioPart?.inlineData?.data) {
-                        const audioData = audioPart.inlineData.data;
-                        const mimeType = audioPart.inlineData.mimeType;
-                        const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
-                        
-                        const binaryString = atob(audioData);
-                        const len = binaryString.length;
-                        const bytes = new Uint8Array(len);
-                        for (let i = 0; i < len; i++) {
-                            bytes[i] = binaryString.charCodeAt(i);
-                        }
-                        const pcmData = new Int16Array(bytes.buffer);
-                        
-                        const wavBlob = pcmToWav(pcmData, sampleRate);
-                        const audioUrl = URL.createObjectURL(wavBlob);
-                        new Audio(audioUrl).play();
-                    } else {
-                        throw new Error('API do Gemini não retornou dados de áudio válidos.');
-                    }
-                } catch (error) {
-                    console.error('Erro na geração de áudio:', error);
-                    showToast("Não foi possível reproduzir o áudio.", "error");
-                } finally {
-                    setTimeout(() => {
-                      buttonElement.innerHTML = originalIcon;
-                      buttonElement.disabled = false;
-                    }, 500);
-                }
-            }
-        }
-        
-        function pcmToWav(pcmData, sampleRate) {
-            const numChannels = 1, bytesPerSample = 2;
-            const blockAlign = numChannels * bytesPerSample;
-            const byteRate = sampleRate * blockAlign;
-            const buffer = new ArrayBuffer(44 + pcmData.byteLength);
-            const view = new DataView(buffer);
-
-            function writeString(view, offset, string) {
-                for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
-            }
-
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + pcmData.byteLength, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true);
-            view.setUint16(22, numChannels, true);
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, byteRate, true);
-            view.setUint16(32, blockAlign, true);
-            view.setUint16(34, bytesPerSample * 8, true);
-            writeString(view, 36, 'data');
-            view.setUint32(40, pcmData.byteLength, true);
-
-            for (let i = 0; i < pcmData.length; i++) {
-                view.setInt16(44 + i * 2, pcmData[i], true);
-            }
-
-            return new Blob([view], { type: 'audio/wav' });
-        }
-
-    </script>
-    
-    <style>
-        /* Estilos específicos para a UI, como botões de ação e navegação */
-        .action-button {
-            @apply bg-surface text-text-secondary hover:text-primary transition-colors p-3 rounded-full border border-slate-300 dark:border-slate-600 shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700;
-        }
-        .action-button i { @apply text-xl; }
-
-        .control-button {
-             @apply bg-surface text-text-secondary hover:text-primary transition-all p-4 rounded-full border border-slate-300 dark:border-slate-600 shadow-lg hover:shadow-xl transform hover:scale-110;
-        }
-        .control-button i { @apply text-2xl; }
-        
-        .nav-button {
-            @apply text-text-secondary hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-text-primary transition-colors;
-        }
-        .nav-button.active-nav {
-             @apply bg-primary/10 text-primary dark:bg-primary/20;
-        }
-    </style>
+    <script src="script.js"></script>
 </body>
 </html>
