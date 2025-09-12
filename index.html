@@ -136,9 +136,6 @@
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-4">
                             <h3 id="slangTitle" class="text-4xl font-bold text-yellow-300"></h3>
-                            <button id="slangPlayButton" class="play-button bg-indigo-500 hover:bg-indigo-600 text-white font-bold p-3 rounded-full shadow-lg transition-transform transform hover:scale-110" data-sentence="">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            </button>
                         </div>
                         <button id="addFlashcardButton" class="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -155,7 +152,7 @@
                     </div>
 
                     <div id="slangContent" class="h-auto max-h-56 custom-scrollbar overflow-y-auto">
-                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -170,7 +167,7 @@
                     Voltar
                 </button>
 
-                <div class="w-full h-80 relative flex items-center justify-center bg-gray-800 rounded-[2rem] shadow-xl transition-colors duration-500 p-4 animate-pop-in">
+                <div id="flashcardDisplay" class="w-full h-80 relative flex items-center justify-center bg-gray-800 rounded-[2rem] shadow-xl transition-colors duration-500 p-4 animate-pop-in">
                     <div id="flashcardFlipper" class="w-full h-full flip-container cursor-pointer">
                         <div class="flipper rounded-[2rem]">
                             <div class="front flex flex-col items-center justify-center p-6 text-center">
@@ -214,9 +211,9 @@
                     Voltar
                 </button>
 
-                <p id="gameErrorMessage" class="hidden text-center text-red-400 font-medium p-4 mt-4 bg-red-900 rounded-2xl shadow-inner animate-fade-in-up">
+                <div id="gameErrorMessage" class="hidden text-center text-red-400 font-medium p-4 mt-4 bg-red-900 rounded-2xl shadow-inner animate-fade-in-up">
                     <p id="gameErrorText"></p>
-                </p>
+                </div>
 
                 <div class="flex flex-col w-full h-full items-center">
                     <div id="gameInstructions" class="bg-gray-700 rounded-[2rem] border border-gray-600 shadow-md p-6 text-center animate-pop-in mb-6 w-full">
@@ -225,7 +222,7 @@
                     </div>
 
                     <div id="chatContainer" class="w-full flex-grow chat-container custom-scrollbar">
-                        </div>
+                    </div>
 
                     <div class="flex w-full mt-4 gap-2">
                         <input
@@ -277,7 +274,7 @@
                 <div class="w-full mt-6 bg-gray-700 rounded-2xl p-6 shadow-lg">
                     <h3 class="text-xl font-bold text-indigo-400 mb-4 text-center">Minhas Gírias</h3>
                     <ul id="profileSlangList" class="space-y-2 custom-scrollbar max-h-56 overflow-y-auto">
-                        </ul>
+                    </ul>
                     <p id="profileEmptyMessage" class="hidden text-gray-500 text-center mt-2">Nenhuma gíria guardada ainda.</p>
                 </div>
             </div>

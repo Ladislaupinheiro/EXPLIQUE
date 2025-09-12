@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- CONFIGURAÇÃO ---
+    const API_KEYS = {
+        GEMINI: "AIzaSyAKpm4N8yVqHwjhwdP9AKMJ9U1s2P3cKA8"
+    };
+
     // Lógica para carregar a preferência do tema
     if (localStorage.theme === 'dark' ||
     (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -29,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const slangCard = document.getElementById('slangCard');
     const slangTitle = document.getElementById('slangTitle');
-    const slangPlayButton = document.getElementById('slangPlayButton');
     const slangContent = document.getElementById('slangContent');
     const tabContainer = document.getElementById('tabContainer');
     const tabButtons = document.querySelectorAll('#tabContainer button');
@@ -49,8 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const flashcardCounter = document.getElementById('flashcardCounter');
     const emptyFlashcardsMessage = document.getElementById('emptyFlashcardsMessage');
     const flashcardControls = document.getElementById('flashcardControls');
-    const flashcardContainer = document.querySelector('#flashcardSection > div:nth-child(2)');
-    
+    const flashcardDisplay = document.getElementById('flashcardDisplay');
     // Game UI
     const chatContainer = document.getElementById('chatContainer');
     const chatInput = document.getElementById('chatInput');
@@ -58,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetSlangElement = document.getElementById('targetSlang');
     const gameErrorMessage = document.getElementById('gameErrorMessage');
     const gameErrorText = document.getElementById('gameErrorText');
-    
     // Profile UI
     const profileUserId = document.getElementById('profileUserId');
     const profileLearnedCount = document.getElementById('profileLearnedCount');
@@ -86,20 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     let lastSlang = null;
     let chatHistory = [];
-
     // --- INICIALIZAÇÃO ---
     slangCountElement.textContent = slangCount;
 
     // --- EVENT LISTENERS ---
 
     searchButton.addEventListener('click', explainSlang);
-
     slangInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             explainSlang();
         }
     });
-
     randomSlangButton.addEventListener('click', () => {
         if (slangs.length === 0) {
             showError("A lista de gírias está vazia.");
@@ -114,39 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
         slangInput.value = randomSlang;
         explainSlang();
     });
-
     themeToggleButton.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
         localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     });
-
     addFlashcardButton.addEventListener('click', () => {
         if (window.slangData) {
             addSlangToFlashcards(window.slangData);
         }
     });
 
-    slangCard.addEventListener('click', async (event) => {
-        const playButton = event.target.closest('.play-button');
-        if (playButton) {
-            const sentence = playButton.dataset.sentence;
-            const originalIcon = playButton.innerHTML;
-            
-            playButton.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-            playButton.disabled = true;
-
-            try {
-                await playAudio(sentence);
-            } catch (error) {
-                console.error('Erro ao reproduzir áudio:', error);
-                playButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
-            } finally {
-                playButton.innerHTML = originalIcon;
-                playButton.disabled = false;
-            }
-        }
-    });
-    
     // Navegação entre seções
     viewFlashcardsButton.addEventListener('click', () => {
         showSection('flashcardSection');
@@ -167,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
     backToExplainerButton.addEventListener('click', () => showSection('explainerSection'));
     backToExplainerFromGameButton.addEventListener('click', () => showSection('explainerSection'));
     backToExplainerFromProfileButton.addEventListener('click', () => showSection('explainerSection'));
-    
     // Controles do Jogo
     sendChatButton.addEventListener('click', handleUserResponse);
     chatInput.addEventListener('keydown', (event) => {
@@ -175,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
             handleUserResponse();
         }
     });
-
     // Controles dos Flashcards
     flashcardFlipper.addEventListener('click', () => {
         flashcardFlipper.querySelector('.flipper').classList.toggle('flipped');
@@ -192,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderFlashcard();
         }
     });
-
     // Navegação por Tabs
     tabContainer.addEventListener('click', (event) => {
         const targetTab = event.target.closest('button[data-tab]');
@@ -211,10 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
         [explainerSection, flashcardSection, gameSection, profileSection].forEach(section => {
             section.classList.add('hidden');
         });
-
         // Mostra a seção desejada
         document.getElementById(sectionId).classList.remove('hidden');
-        
         // Ajustes de UI específicos para cada seção
         const isGameSection = sectionId === 'gameSection';
         mainContent.classList.toggle('p-0', isGameSection);
@@ -222,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mainContent.classList.toggle('md:p-12', !isGameSection);
         subheadingText.classList.toggle('hidden', isGameSection);
         slangCountElement.parentElement.classList.toggle('hidden', isGameSection);
-
         // Atualiza o subtítulo
         switch (sectionId) {
             case 'explainerSection':
@@ -265,17 +235,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderFlashcard() {
         const hasFlashcards = flashcardsDeck.length > 0;
-        
+    
         emptyFlashcardsMessage.classList.toggle('hidden', hasFlashcards);
-        flashcardContainer.classList.toggle('hidden', !hasFlashcards);
+        flashcardDisplay.classList.toggle('hidden', !hasFlashcards);
         flashcardControls.classList.toggle('hidden', !hasFlashcards);
-
+    
         if (hasFlashcards) {
             flashcardFlipper.querySelector('.flipper').classList.remove('flipped');
             const currentSlang = flashcardsDeck[currentFlashcardIndex];
+            
             flashcardSlang.textContent = currentSlang.slang;
             flashcardDefinition.textContent = currentSlang.definition;
             flashcardCounter.textContent = `${currentFlashcardIndex + 1} / ${flashcardsDeck.length}`;
+        } else {
+            // Garante que o contador esteja correto quando não há flashcards
+            flashcardCounter.textContent = "0 / 0";
         }
     }
 
@@ -291,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
         targetSlangElement.textContent = currentGameSlang;
         
         const initialPrompt = `Let's have a short, friendly chat. Your goal is to get me to use the slang term "${currentGameSlang}" naturally in a sentence. Start the conversation.`;
-        
         addMessageToChat("Hey! Let's chat for a bit.", 'ai');
         chatHistory.push({ role: 'user', parts: [{ text: initialPrompt }] });
         chatHistory.push({ role: 'model', parts: [{ text: "Hey! Let's chat for a bit." }] });
@@ -314,7 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
         chatInput.disabled = true;
         
         chatHistory.push({ role: 'user', parts: [{ text: userText }] });
-
         if (userText.toLowerCase().includes(currentGameSlang.toLowerCase())) {
             showLearningFeedback('Excellent! You used the slang correctly!');
             setTimeout(startNewGameRound, 2500);
@@ -324,12 +296,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function generateAiResponse() {
-        // Substitua pela sua chave de API
-        const apiKey = ""; 
+        const apiKey = API_KEYS.GEMINI;
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
         
         const payload = { contents: chatHistory };
-
         try {
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -340,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const result = await response.json();
             const aiResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-            
             if (aiResponseText) {
                 addMessageToChat(aiResponseText, 'ai');
                 chatHistory.push({ role: 'model', parts: [{ text: aiResponseText }] });
@@ -366,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasFlashcards = flashcardsDeck.length > 0;
 
         profileEmptyMessage.classList.toggle('hidden', hasFlashcards);
-
         if (hasFlashcards) {
             flashcardsDeck.forEach(slang => {
                 const li = document.createElement('li');
@@ -374,38 +342,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.classList.add('bg-gray-600', 'p-3', 'rounded-lg', 'shadow-sm', 'text-gray-200');
                 profileSlangList.appendChild(li);
             });
-        }
-    }
-
-    async function playAudio(text) {
-        // Substitua pela sua chave de API
-        const apiKey = "";
-        const apiUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
-
-        const payload = {
-            input: { text: text },
-            voice: { languageCode: 'en-US', name: 'en-US-Studio-O' },
-            audioConfig: { audioEncoding: 'MP3' }
-        };
-        
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            if (!response.ok) throw new Error(`Erro na API de áudio: ${response.status}`);
-            
-            const result = await response.json();
-            if (result.audioContent) {
-                const audio = new Audio("data:audio/mp3;base64," + result.audioContent);
-                audio.play();
-            } else {
-                throw new Error("Não foi recebido conteúdo de áudio.");
-            }
-        } catch (error) {
-            console.error('Erro na geração de áudio:', error);
-            throw error; // Propaga o erro para o listener de clique
         }
     }
     
@@ -430,14 +366,13 @@ document.addEventListener('DOMContentLoaded', () => {
     async function explainSlang() {
         const slang = slangInput.value.trim().toLowerCase();
         if (!slang) return;
-
+    
         hideError();
         loadingIndicator.classList.remove('hidden');
         slangCard.classList.add('hidden');
         slangContent.innerHTML = '';
         
-        // Substitua pela sua chave de API
-        const apiKey = "";
+        const apiKey = API_KEYS.GEMINI;
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
         
         try {
@@ -454,41 +389,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
             if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-
+    
             const result = await response.json();
             const responseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-            
             if (!responseText) throw new Error('A API não retornou uma resposta válida.');
-
-            const slangData = JSON.parse(responseText);
-            
+    
+            let slangData;
+            try {
+                slangData = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error("Erro ao analisar JSON da IA:", responseText);
+                throw new Error("A resposta da IA não estava no formato esperado.");
+            }
+    
             if (!slangData.slang || !slangData.definition) {
                  throw new Error('Os dados recebidos da IA estão incompletos.');
             }
-
+    
             window.slangData = slangData;
             slangCard.classList.remove('hidden');
             slangTitle.textContent = slangData.slang;
-            slangPlayButton.dataset.sentence = slangData.slang;
             
             tabButtons.forEach(btn => btn.classList.remove('border-yellow-300', 'text-yellow-300'));
             document.getElementById('tab-definicao').classList.add('border-yellow-300', 'text-yellow-300');
             
             updateSlangContent(slangData, 'definicao');
-
             if (!learnedSlangs.has(slangData.slang.toLowerCase())) {
                 learnedSlangs.add(slangData.slang.toLowerCase());
-                localStorage.setItem('learnedSlangs', JSON.stringify(Array.from(learnedSlangs)));
+                localStorage.setItem('learnedSlangs', JSON.stringify([...learnedSlangs]));
                 slangCount = learnedSlangs.size;
                 slangCountElement.textContent = slangCount;
                 showLearningFeedback(`Parabéns! Agora você entende '${slangData.slang}'.`);
             }
-
+    
         } catch (error) {
             console.error('Erro ao buscar a gíria:', error);
-            showError('Houve um erro. Verifique sua conexão ou a gíria e tente novamente.');
+            showError(error.message || 'Houve um erro. Verifique sua conexão ou a gíria e tente novamente.');
         } finally {
             loadingIndicator.classList.add('hidden');
         }
@@ -508,9 +445,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             <li class="p-4 bg-gray-600 rounded-xl flex flex-col shadow-sm animate-slide-in-right">
                                 <div class="flex items-center justify-between">
                                     <p class="text-white font-bold">${example.phrase}</p>
-                                    <button class="play-button bg-indigo-500 hover:bg-indigo-600 text-white p-2 rounded-full shadow-md transition-transform transform hover:scale-110" data-sentence="${example.phrase}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                    </button>
                                 </div>
                                 <p class="text-gray-300 italic mt-2">${example.translation}</p>
                             </li>
