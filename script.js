@@ -459,4 +459,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         slangContent.innerHTML = contentHTML;
     }
+
 });
